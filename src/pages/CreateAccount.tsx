@@ -16,7 +16,7 @@ const CreateAccount = () => {
   const handleCreateAccount = (e: React.FormEvent) => {
     e.preventDefault();
     // No actual auth logic - just navigate to home
-    navigate("/");
+    navigate("/home");
   };
 
   return (

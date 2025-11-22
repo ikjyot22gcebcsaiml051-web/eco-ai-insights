@@ -1,5 +1,5 @@
-import { Link, useLocation } from "react-router-dom";
-import { Leaf, ChevronDown, LogIn } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Leaf, ChevronDown, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -11,13 +11,30 @@ import { cn } from "@/lib/utils";
 
 export const Navigation = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   
   const isActive = (path: string) => location.pathname === path;
+  
+  const handleLogout = () => {
+    navigate("/");
+  };
   
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60">
       <div className="container mx-auto flex h-16 items-center px-4">
-        <Link to="/" className="flex items-center gap-2 mr-8">
+        <div className="flex items-center gap-4">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleLogout}
+            className="gap-2 text-muted-foreground hover:text-foreground"
+          >
+            <LogOut className="h-4 w-4" />
+            Logout
+          </Button>
+        </div>
+        
+        <Link to="/home" className="flex items-center gap-2 mx-8">
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-light">
             <Leaf className="h-6 w-6 text-white" />
           </div>
@@ -29,9 +46,9 @@ export const Navigation = () => {
             variant="ghost"
             size="sm"
             asChild
-            className={cn(isActive("/") && "bg-accent")}
+            className={cn(isActive("/home") && "bg-accent")}
           >
-            <Link to="/">Home</Link>
+            <Link to="/home">Home</Link>
           </Button>
           
           <DropdownMenu>
@@ -99,17 +116,6 @@ export const Navigation = () => {
             className={cn(isActive("/about") && "bg-accent")}
           >
             <Link to="/about">About</Link>
-          </Button>
-          
-          <Button
-            size="sm"
-            asChild
-            className="ml-2 gap-2"
-          >
-            <Link to="/login">
-              <LogIn className="h-4 w-4" />
-              Login
-            </Link>
           </Button>
         </div>
       </div>
