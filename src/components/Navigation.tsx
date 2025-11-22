@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Leaf, ChevronDown } from "lucide-react";
+import { Leaf, ChevronDown, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -99,6 +99,17 @@ export const Navigation = () => {
             className={cn(isActive("/about") && "bg-accent")}
           >
             <Link to="/about">About</Link>
+          </Button>
+          
+          <Button
+            size="sm"
+            asChild
+            className="ml-2 gap-2"
+          >
+            <Link to="/login">
+              <LogIn className="h-4 w-4" />
+              Login
+            </Link>
           </Button>
         </div>
       </div>
