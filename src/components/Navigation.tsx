@@ -113,6 +113,15 @@ export const Navigation = () => {
             variant="ghost"
             size="sm"
             asChild
+            className={cn(isActive("/prompt-estimator") && "bg-accent")}
+          >
+            <Link to="/prompt-estimator">Prompt Estimator</Link>
+          </Button>
+          
+          <Button
+            variant="ghost"
+            size="sm"
+            asChild
             className={cn(isActive("/about") && "bg-accent")}
           >
             <Link to="/about">About</Link>
