@@ -77,6 +77,15 @@ export const Navigation = () => {
             variant="ghost"
             size="sm"
             asChild
+            className={cn(isActive("/prompt-estimator") && "bg-accent")}
+          >
+            <Link to="/prompt-estimator">Prompt Estimator</Link>
+          </Button>
+          
+          <Button
+            variant="ghost"
+            size="sm"
+            asChild
             className={cn(isActive("/compare") && "bg-accent")}
           >
             <Link to="/compare">Compare</Link>
@@ -107,15 +116,6 @@ export const Navigation = () => {
             className={cn(isActive("/live-tracker") && "bg-accent")}
           >
             <Link to="/live-tracker">Live Tracker</Link>
-          </Button>
-          
-          <Button
-            variant="ghost"
-            size="sm"
-            asChild
-            className={cn(isActive("/prompt-estimator") && "bg-accent")}
-          >
-            <Link to="/prompt-estimator">Prompt Estimator</Link>
           </Button>
           
           <Button

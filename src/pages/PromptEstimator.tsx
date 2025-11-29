@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Navigation } from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -23,8 +24,13 @@ interface AnalysisResult {
 const PromptEstimator = () => {
   const [prompt, setPrompt] = useState("");
   const [result, setResult] = useState<AnalysisResult | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const analyzePrompt = () => {
+    setIsLoading(true);
+    setResult(null);
+    
+    setTimeout(() => {
     const lowerPrompt = prompt.toLowerCase();
     
     let category = "Unknown";
@@ -33,7 +39,7 @@ const PromptEstimator = () => {
     let explanation = "Based on your query, GPT-4 provides a good balance of accuracy and efficiency.";
 
     // A. CODING / PROGRAMMING
-    const codingKeywords = ["code", "program", "programming", "script", "bug", "function", "loop", "build", "compile"];
+    const codingKeywords = ["code", "program", "programming", "script", "bug", "function", "loop", "build", "compile", "json", "api", "backend", "endpoint", "algorithm", "database"];
     const leetcodeKeywords = ["leetcode", "lc", "two sum", "array", "linked list", "tree", "dp", "dynamic programming"];
     
     const hasCodingKeyword = codingKeywords.some(kw => lowerPrompt.includes(kw));
@@ -41,7 +47,7 @@ const PromptEstimator = () => {
     
     if (hasCodingKeyword || hasLeetcodeKeyword) {
       category = "Coding / Programming";
-      multiplier = 3.0;
+      multiplier = 3.0 + (Math.random() * 0.2 - 0.1);
       
       if (hasLeetcodeKeyword) {
         recommendedModel = "GPT-4";
@@ -53,19 +59,19 @@ const PromptEstimator = () => {
     }
     // B. MATHS / PHYSICS
     else if (
-      ["sin", "cos", "tan", "theta", "integral", "derivative", "physics", "calculation", "equation", "solve", "sqrt", "power", "x^2", "x2", "numbers"].some(kw => lowerPrompt.includes(kw))
+      ["sin", "cos", "tan", "theta", "integral", "derivative", "physics", "calculation", "equation", "solve", "sqrt", "power", "x^2", "x2", "numbers", "pi", "radians", "degrees", "vector", "matrix", "log"].some(kw => lowerPrompt.includes(kw))
     ) {
       category = "Maths / Physics";
-      multiplier = 2.0;
+      multiplier = 2.0 + (Math.random() * 0.2 - 0.1);
       recommendedModel = "GPT-4";
       explanation = "GPT-4 excels at mathematical reasoning and physics problem solving.";
     }
     // C. REASONING / LOGIC PUZZLES
     else if (
-      ["reason", "logical", "mother", "father", "grandmother", "east", "west", "north", "south", "puzzle", "riddle", "who", "which", "why"].some(kw => lowerPrompt.includes(kw))
+      ["reason", "logical", "mother", "father", "grandmother", "east", "west", "north", "south", "puzzle", "riddle", "who", "which", "why", "relation", "compare", "stronger", "weaker", "logic problem"].some(kw => lowerPrompt.includes(kw))
     ) {
       category = "Reasoning / Logic Puzzles";
-      multiplier = 3.2;
+      multiplier = 3.2 + (Math.random() * 0.3 - 0.15);
       recommendedModel = "Claude 3";
       explanation = "Claude 3 offers the best logical consistency for complex reasoning tasks.";
     }
@@ -74,14 +80,14 @@ const PromptEstimator = () => {
       ["hello", "hi", "good morning", "news", "summarize news", "essay", "letter", "explain", "write", "story", "latest"].some(kw => lowerPrompt.includes(kw))
     ) {
       category = "General Query";
-      multiplier = 1.0;
+      multiplier = 1.0 + (Math.random() * 0.1 - 0.05);
       recommendedModel = "Gemini (Google)";
       explanation = "Gemini is connected to Google search and handles fresh/news data well.";
     }
     // E. UNKNOWN CATEGORY
     else {
       category = "Unknown";
-      multiplier = 1.0;
+      multiplier = 1.0 + (Math.random() * 0.1 - 0.05);
       recommendedModel = "GPT-4";
       explanation = "No specific keywords detected. GPT-4 is a reliable choice for general tasks.";
     }
@@ -114,13 +120,15 @@ const PromptEstimator = () => {
       },
     ];
 
-    setResult({
-      category,
-      multiplier,
-      recommendedModel,
-      explanation,
-      energyResults,
-    });
+      setResult({
+        category,
+        multiplier,
+        recommendedModel,
+        explanation,
+        energyResults,
+      });
+      setIsLoading(false);
+    }, 5000);
   };
 
   return (
@@ -174,73 +182,93 @@ const PromptEstimator = () => {
             </CardContent>
           </Card>
 
+          {/* Loading State */}
+          {isLoading && (
+            <Card className="animate-in fade-in duration-500">
+              <CardContent className="pt-12 pb-12 flex flex-col items-center justify-center">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="animate-spin">
+                    <Zap className="h-8 w-8 text-primary" />
+                  </div>
+                </div>
+                <p className="text-lg font-medium text-foreground animate-pulse">
+                  Analyzing your prompt… Recommending the best model…
+                </p>
+              </CardContent>
+            </Card>
+          )}
+
           {/* Results */}
-          {result && (
+          {result && !isLoading && (
             <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-              {/* Category and Recommendation */}
-              <div className="grid md:grid-cols-2 gap-4">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-lg">Detected Category</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <Badge variant="secondary" className="text-base px-4 py-2">
-                      {result.category}
-                    </Badge>
-                    <p className="text-sm text-muted-foreground mt-3">
-                      Energy Multiplier: <span className="font-semibold text-foreground">{result.multiplier}×</span>
-                    </p>
+              {/* Reasoning Warning */}
+              {result.category === "Reasoning / Logic Puzzles" && (
+                <Card className="border-destructive/50 bg-destructive/10">
+                  <CardContent className="pt-6">
+                    <div className="flex items-start gap-3">
+                      <div className="h-5 w-5 text-destructive mt-0.5">⚠️</div>
+                      <div>
+                        <p className="text-sm font-medium text-destructive">
+                          Note: No current AI model gives consistently accurate reasoning answers. It is better to verify or solve reasoning problems manually.
+                        </p>
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
+              )}
 
-                <Card className="border-primary/20 bg-primary/5">
-                  <CardHeader>
-                    <CardTitle className="text-lg flex items-center gap-2">
-                      <Zap className="h-5 w-5 text-primary" />
-                      Recommended Model
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="font-semibold text-lg text-primary mb-2">{result.recommendedModel}</p>
-                    <p className="text-sm text-foreground/80">{result.explanation}</p>
-                  </CardContent>
-                </Card>
-              </div>
-
-              {/* Energy Table */}
+              {/* Detected Category */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Energy Estimates by Model</CardTitle>
-                  <CardDescription>Estimated energy consumption per query</CardDescription>
+                  <CardTitle className="text-lg">Detected Category</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="overflow-x-auto">
-                    <table className="w-full">
-                      <thead>
-                        <tr className="border-b">
-                          <th className="text-left py-3 px-4 font-semibold text-foreground">Model</th>
-                          <th className="text-left py-3 px-4 font-semibold text-foreground">Base Energy (kWh)</th>
-                          <th className="text-left py-3 px-4 font-semibold text-foreground">Multiplier</th>
-                          <th className="text-left py-3 px-4 font-semibold text-foreground">Estimated Energy (kWh)</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {result.energyResults.map((row, idx) => (
-                          <tr 
-                            key={row.model} 
-                            className={`border-b last:border-0 ${idx % 2 === 0 ? 'bg-muted/20' : ''}`}
-                          >
-                            <td className="py-3 px-4 font-medium">{row.model}</td>
-                            <td className="py-3 px-4">{row.baseEnergy.toFixed(6)}</td>
-                            <td className="py-3 px-4">{row.multiplier.toFixed(1)}×</td>
-                            <td className="py-3 px-4 font-semibold text-primary">
-                              {row.estimatedEnergy.toFixed(6)}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                  <Badge variant="secondary" className="text-base px-4 py-2">
+                    {result.category}
+                  </Badge>
+                </CardContent>
+              </Card>
+
+              {/* Recommended Model - Large Card */}
+              <Card className="border-primary/20 bg-primary/5">
+                <CardHeader>
+                  <CardTitle className="text-2xl flex items-center gap-2">
+                    <Zap className="h-6 w-6 text-primary" />
+                    Recommended Model
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center gap-4">
+                    <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center">
+                      <span className="text-2xl font-bold text-primary">
+                        {result.recommendedModel.charAt(0)}
+                      </span>
+                    </div>
+                    <div>
+                      <p className="font-bold text-2xl text-primary">{result.recommendedModel}</p>
+                      <p className="text-sm text-foreground/80 mt-1">{result.explanation}</p>
+                    </div>
                   </div>
+                  <Button asChild className="w-full gap-2">
+                    <Link to={`/models/${result.recommendedModel.toLowerCase().replace(/\s+/g, '-')}`}>
+                      Visit Model Page
+                    </Link>
+                  </Button>
+                </CardContent>
+              </Card>
+
+              {/* Estimated Energy */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Estimated Energy Consumption</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-3xl font-bold text-primary">
+                    {result.energyResults.find(r => r.model === result.recommendedModel)?.estimatedEnergy.toFixed(6) || "N/A"} kWh
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Estimated energy used per query for {result.recommendedModel}
+                  </p>
                 </CardContent>
               </Card>
             </div>
