@@ -14,6 +14,7 @@ import Graphs from "./pages/Graphs";
 import Recommendation from "./pages/Recommendation";
 import LiveTracker from "./pages/LiveTracker";
 import About from "./pages/About";
+import PromptEstimator from "./pages/PromptEstimator";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -35,6 +36,7 @@ const App = () => (
           <Route path="/graphs" element={<Graphs />} />
           <Route path="/recommendation" element={<Recommendation />} />
           <Route path="/live-tracker" element={<LiveTracker />} />
+          <Route path="/prompt-estimator" element={<PromptEstimator />} />
           <Route path="/about" element={<About />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

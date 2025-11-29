@@ -10,11 +10,17 @@ const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // No actual auth logic - just navigate to home
-    navigate("/home");
+    
+    // Check credentials
+    if (email === "ikjyotsaluja01@gmail.com" && password === "1") {
+      navigate("/home");
+    } else {
+      setError("Invalid email or password. Only the assigned test account can login.");
+    }
   };
 
   return (
@@ -53,6 +59,11 @@ const Login = () => {
                 required
               />
             </div>
+            {error && (
+              <div className="text-sm text-red-500 mt-2">
+                {error}
+              </div>
+            )}
           </CardContent>
           <CardFooter className="flex flex-col gap-4">
             <Button type="submit" className="w-full">
