@@ -53,12 +53,19 @@ const Models = () => {
                   <span className="text-sm text-muted-foreground">{model.answerQuality}/100</span>
                 </div>
               </CardContent>
-              <CardFooter>
+              <CardFooter className="flex gap-2">
                 <Button 
-                  className="w-full gap-2" 
+                  className="flex-1 gap-2" 
                   onClick={() => navigate(`/models/${model.id}`)}
                 >
                   View Details <ArrowRight className="h-4 w-4" />
+                </Button>
+                <Button 
+                  variant="outline"
+                  className="flex-1 gap-2"
+                  onClick={() => window.open(model.websiteUrl, '_blank')}
+                >
+                  Visit Website
                 </Button>
               </CardFooter>
             </Card>

@@ -92,31 +92,39 @@ const PromptEstimator = () => {
       explanation = "No specific keywords detected. GPT-4 is a reliable choice for general tasks.";
     }
 
-    // Calculate energy for all models
+    // Calculate energy for all models with updated CO₂ values
     const energyResults = [
       {
         model: "GPT-4",
         baseEnergy: 0.0008,
+        baseCO2: 3.0,
         multiplier: multiplier,
         estimatedEnergy: 0.0008 * multiplier,
+        estimatedCO2: 3.0 * multiplier,
       },
       {
         model: "Grok-1.5",
         baseEnergy: 0.0012,
+        baseCO2: 3.75,
         multiplier: multiplier,
         estimatedEnergy: 0.0012 * multiplier,
+        estimatedCO2: 3.75 * multiplier,
       },
       {
         model: "Claude 3",
         baseEnergy: 0.0009,
+        baseCO2: 2.5,
         multiplier: multiplier,
         estimatedEnergy: 0.0009 * multiplier,
+        estimatedCO2: 2.5 * multiplier,
       },
       {
         model: "Llama-3 70B",
         baseEnergy: 0.0003,
+        baseCO2: 1.4,
         multiplier: multiplier,
         estimatedEnergy: 0.0003 * multiplier,
+        estimatedCO2: 1.4 * multiplier,
       },
     ];
 

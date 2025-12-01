@@ -12,7 +12,7 @@ import ModelDetail from "./pages/ModelDetail";
 import Compare from "./pages/Compare";
 import Graphs from "./pages/Graphs";
 import Recommendation from "./pages/Recommendation";
-import LiveTracker from "./pages/LiveTracker";
+import UploadChat from "./pages/UploadChat";
 import About from "./pages/About";
 import PromptEstimator from "./pages/PromptEstimator";
 import NotFound from "./pages/NotFound";
@@ -35,7 +35,7 @@ const App = () => (
           <Route path="/compare" element={<Compare />} />
           <Route path="/graphs" element={<Graphs />} />
           <Route path="/recommendation" element={<Recommendation />} />
-          <Route path="/live-tracker" element={<LiveTracker />} />
+          <Route path="/upload-chat" element={<UploadChat />} />
           <Route path="/prompt-estimator" element={<PromptEstimator />} />
           <Route path="/about" element={<About />} />
           <Route path="*" element={<NotFound />} />

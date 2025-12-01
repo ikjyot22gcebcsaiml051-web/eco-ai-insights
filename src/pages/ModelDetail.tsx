@@ -1,8 +1,9 @@
 import { useParams } from "react-router-dom";
-import { Cpu, Zap, Award, Leaf } from "lucide-react";
+import { Cpu, Zap, Award, Leaf, ExternalLink } from "lucide-react";
 import { Navigation } from "@/components/Navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { DualAxisChart } from "@/components/DualAxisChart";
 import { models, monthNames } from "@/data/modelData";
 
@@ -40,14 +41,23 @@ const ModelDetail = () => {
       <main className="container mx-auto px-4 py-12">
         {/* Hero Banner */}
         <div className="gradient-hero rounded-2xl p-8 md:p-12 mb-8 text-white">
-          <div className="flex items-center gap-4 mb-4">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/20 backdrop-blur">
-              <Cpu className="h-8 w-8" />
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-4">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/20 backdrop-blur">
+                <Cpu className="h-8 w-8" />
+              </div>
+              <div>
+                <h1 className="text-4xl font-bold mb-2">{model.name}</h1>
+                <p className="text-xl opacity-90">{model.company}</p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-4xl font-bold mb-2">{model.name}</h1>
-              <p className="text-xl opacity-90">{model.company}</p>
-            </div>
+            <Button 
+              variant="secondary"
+              className="gap-2"
+              onClick={() => window.open(model.websiteUrl, '_blank')}
+            >
+              Visit Website <ExternalLink className="h-4 w-4" />
+            </Button>
           </div>
           <Badge variant="secondary" className="bg-white/20 text-white border-0">
             {model.architecture} Architecture
