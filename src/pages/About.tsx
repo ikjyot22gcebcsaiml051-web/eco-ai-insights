@@ -104,6 +104,73 @@ const About = () => {
               </p>
             </CardContent>
           </Card>
+
+          {/* Research References */}
+          <Card>
+            <CardHeader>
+              <div className="flex items-center gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-chart-2/10">
+                  <Calculator className="h-6 w-6 text-chart-2" />
+                </div>
+                <CardTitle className="text-2xl">Research References</CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div>
+                <h3 className="font-semibold text-lg mb-2">
+                  <a 
+                    href="https://smartly.ai/blog/the-carbon-footprint-of-chatgpt-how-much-co2-does-a-query-generate" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline"
+                  >
+                    The Carbon Footprint of ChatGPT
+                  </a>
+                </h3>
+                <p className="text-muted-foreground">
+                  Comprehensive analysis of ChatGPT's environmental impact, examining the CO₂ emissions 
+                  per query and comparing them to everyday activities. This research provides crucial 
+                  insights into the energy consumption patterns of large language models.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-semibold text-lg mb-2">
+                  <a 
+                    href="https://piktochart.com/blog/carbon-footprint-of-chatgpt/" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline"
+                  >
+                    Understanding AI's Environmental Cost
+                  </a>
+                </h3>
+                <p className="text-muted-foreground">
+                  Visual breakdown of how AI models like ChatGPT contribute to carbon emissions, 
+                  including data center operations, training costs, and per-query environmental impact. 
+                  Helps contextualize the true cost of AI convenience.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-semibold text-lg mb-2">
+                  <a 
+                    href="https://news.climate.columbia.edu/2023/06/09/ais-growing-carbon-footprint/" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline"
+                  >
+                    AI's Growing Carbon Footprint - Columbia Climate School
+                  </a>
+                </h3>
+                <p className="text-muted-foreground">
+                  Academic research from Columbia University examining the exponential growth of AI's 
+                  carbon footprint. Discusses the challenges of scaling AI sustainably and the importance 
+                  of renewable energy adoption in data centers.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </main>
     </div>

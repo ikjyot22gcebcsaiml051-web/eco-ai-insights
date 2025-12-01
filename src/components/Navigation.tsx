@@ -86,6 +86,15 @@ export const Navigation = () => {
             variant="ghost"
             size="sm"
             asChild
+            className={cn(isActive("/upload-chat") && "bg-accent")}
+          >
+            <Link to="/upload-chat">Upload Chat</Link>
+          </Button>
+          
+          <Button
+            variant="ghost"
+            size="sm"
+            asChild
             className={cn(isActive("/compare") && "bg-accent")}
           >
             <Link to="/compare">Compare</Link>
@@ -107,15 +116,6 @@ export const Navigation = () => {
             className={cn(isActive("/recommendation") && "bg-accent")}
           >
             <Link to="/recommendation">Our Recommendation</Link>
-          </Button>
-          
-          <Button
-            variant="ghost"
-            size="sm"
-            asChild
-            className={cn(isActive("/live-tracker") && "bg-accent")}
-          >
-            <Link to="/live-tracker">Live Tracker</Link>
           </Button>
           
           <Button
