@@ -6,6 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { CarbonEquivalencyWidget } from "@/components/CarbonEquivalencyWidget";
 import { Upload, Download, Mail, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import jsPDF from "jspdf";
@@ -471,6 +472,17 @@ const UploadChat = () => {
                   </CardContent>
                 </Card>
               )}
+
+              {/* Carbon Equivalency Widget */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Environmental Impact Context</CardTitle>
+                  <CardDescription>What does {result.totalCarbon.toFixed(2)}g CO₂ mean in real terms?</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <CarbonEquivalencyWidget totalCO2={result.totalCarbon} />
+                </CardContent>
+              </Card>
 
               {/* Query Details Table */}
               <Card>

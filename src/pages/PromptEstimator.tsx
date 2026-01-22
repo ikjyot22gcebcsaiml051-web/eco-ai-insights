@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { CarbonEquivalencyWidget } from "@/components/CarbonEquivalencyWidget";
 import { Lightbulb, Zap } from "lucide-react";
 import { models } from "@/data/modelData";
 
@@ -13,6 +14,7 @@ interface AnalysisResult {
   multiplier: number;
   recommendedModel: string;
   explanation: string;
+  estimatedCO2: number;
   energyResults: {
     model: string;
     baseEnergy: number;
@@ -128,11 +130,15 @@ const PromptEstimator = () => {
       },
     ];
 
+    const recommendedModelData = energyResults.find(r => r.model === recommendedModel);
+    const estimatedCO2 = recommendedModelData?.estimatedCO2 || 3.0;
+
       setResult({
         category,
         multiplier,
         recommendedModel,
         explanation,
+        estimatedCO2,
         energyResults,
       });
       setIsLoading(false);
@@ -277,6 +283,17 @@ const PromptEstimator = () => {
                   <p className="text-sm text-muted-foreground mt-2">
                     Estimated energy used per query for {result.recommendedModel}
                   </p>
+                </CardContent>
+              </Card>
+
+              {/* Carbon Equivalency Widget */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Environmental Impact</CardTitle>
+                  <CardDescription>What does {result.estimatedCO2.toFixed(2)}g CO₂ mean in real terms?</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <CarbonEquivalencyWidget totalCO2={result.estimatedCO2} />
                 </CardContent>
               </Card>
             </div>

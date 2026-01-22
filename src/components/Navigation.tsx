@@ -86,6 +86,15 @@ export const Navigation = () => {
             variant="ghost"
             size="sm"
             asChild
+            className={cn(isActive("/prompt-refiner") && "bg-accent")}
+          >
+            <Link to="/prompt-refiner">Prompt Refiner</Link>
+          </Button>
+          
+          <Button
+            variant="ghost"
+            size="sm"
+            asChild
             className={cn(isActive("/upload-chat") && "bg-accent")}
           >
             <Link to="/upload-chat">Upload Chat</Link>

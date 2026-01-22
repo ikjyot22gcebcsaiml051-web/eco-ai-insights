@@ -15,6 +15,7 @@ import Recommendation from "./pages/Recommendation";
 import UploadChat from "./pages/UploadChat";
 import About from "./pages/About";
 import PromptEstimator from "./pages/PromptEstimator";
+import PromptRefiner from "./pages/PromptRefiner";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -37,6 +38,7 @@ const App = () => (
           <Route path="/recommendation" element={<Recommendation />} />
           <Route path="/upload-chat" element={<UploadChat />} />
           <Route path="/prompt-estimator" element={<PromptEstimator />} />
+          <Route path="/prompt-refiner" element={<PromptRefiner />} />
           <Route path="/about" element={<About />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

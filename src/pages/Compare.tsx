@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { DualAxisChart } from "@/components/DualAxisChart";
+import { CarbonEquivalencyWidget } from "@/components/CarbonEquivalencyWidget";
 import { models } from "@/data/modelData";
 import { Award, Zap, Leaf } from "lucide-react";
 
@@ -14,6 +15,9 @@ const Compare = () => {
     value1: model.energyPerQuery,
     value2: model.efficiency,
   }));
+
+  // Calculate total CO₂ from all models for widget demo
+  const totalCO2 = modelList.reduce((sum, model) => sum + model.carbonEmission, 0);
 
   const getMainEnergySource = (sources: any) => {
     if (sources.renewable) return "100% Renewable";
@@ -87,6 +91,17 @@ const Compare = () => {
               unit1="(kWh)"
               unit2=""
             />
+          </CardContent>
+        </Card>
+
+        {/* Carbon Equivalency Widget */}
+        <Card className="mb-12">
+          <CardHeader>
+            <CardTitle>Carbon Footprint Context</CardTitle>
+            <CardDescription>What does {totalCO2.toFixed(2)}g CO₂ (combined model emissions) mean in real terms?</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <CarbonEquivalencyWidget totalCO2={totalCO2} />
           </CardContent>
         </Card>
 
