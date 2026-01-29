@@ -1,74 +1,43 @@
-import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { User, Session } from "@supabase/supabase-js";
+import { useState, useEffect, useCallback } from "react";
+
+const AUTH_STORAGE_KEY = "demo_auth_authenticated";
+
+// Demo credentials - for demonstration purposes only
+const DEMO_EMAIL = "ikjyotsaluja01@gmail.com";
+const DEMO_PASSWORD = "1";
 
 export const useAuth = () => {
-  const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    return localStorage.getItem(AUTH_STORAGE_KEY) === "true";
+  });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Set up auth state listener FIRST
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        setLoading(false);
-      }
-    );
-
-    // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
+    // Check localStorage on mount
+    const authState = localStorage.getItem(AUTH_STORAGE_KEY) === "true";
+    setIsAuthenticated(authState);
+    setLoading(false);
   }, []);
 
-  const signIn = async (email: string, password: string) => {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    return { data, error };
-  };
+  const signIn = useCallback((email: string, password: string) => {
+    // Validate against demo credentials
+    if (email === DEMO_EMAIL && password === DEMO_PASSWORD) {
+      localStorage.setItem(AUTH_STORAGE_KEY, "true");
+      setIsAuthenticated(true);
+      return { success: true, error: null };
+    }
+    return { success: false, error: "Invalid email or password" };
+  }, []);
 
-  const signUp = async (email: string, password: string) => {
-    const redirectUrl = `${window.location.origin}/`;
-    
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: redirectUrl,
-      },
-    });
-    return { data, error };
-  };
-
-  const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    return { error };
-  };
-
-  const resetPassword = async (email: string) => {
-    const redirectUrl = `${window.location.origin}/reset-password`;
-    
-    const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: redirectUrl,
-    });
-    return { data, error };
-  };
+  const signOut = useCallback(() => {
+    localStorage.removeItem(AUTH_STORAGE_KEY);
+    setIsAuthenticated(false);
+  }, []);
 
   return {
-    user,
-    session,
+    isAuthenticated,
     loading,
     signIn,
-    signUp,
     signOut,
-    resetPassword,
   };
 };

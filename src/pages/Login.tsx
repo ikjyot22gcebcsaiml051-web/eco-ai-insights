@@ -5,17 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useAuth } from "@/hooks/useAuth";
-import { z } from "zod";
-
-const loginSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
-  password: z.string().min(1, "Password is required"),
-});
 
 const Login = () => {
   const navigate = useNavigate();
-  const { signIn, session, loading: authLoading } = useAuth();
+  const { signIn, isAuthenticated, loading: authLoading } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -23,43 +18,28 @@ const Login = () => {
 
   // Redirect if already authenticated
   useEffect(() => {
-    if (session) {
+    if (isAuthenticated) {
       navigate("/home", { replace: true });
     }
-  }, [session, navigate]);
+  }, [isAuthenticated, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-
-    // Validate input
-    const validation = loginSchema.safeParse({ email, password });
-    if (!validation.success) {
-      setError(validation.error.errors[0].message);
-      return;
-    }
-
     setIsSubmitting(true);
 
-    try {
-      const { error: signInError } = await signIn(email, password);
-      
-      if (signInError) {
-        if (signInError.message.includes("Invalid login credentials")) {
-          setError("Invalid email or password. Please try again.");
-        } else if (signInError.message.includes("Email not confirmed")) {
-          setError("Please verify your email address before logging in.");
-        } else {
-          setError(signInError.message);
-        }
-      } else {
-        navigate("/home", { replace: true });
-      }
-    } catch (err) {
-      setError("An unexpected error occurred. Please try again.");
-    } finally {
-      setIsSubmitting(false);
+    // Small delay for smooth transition feel
+    await new Promise(resolve => setTimeout(resolve, 300));
+
+    const result = signIn(email, password);
+    
+    if (result.success) {
+      navigate("/home", { replace: true });
+    } else {
+      setError(result.error || "Invalid email or password");
     }
+    
+    setIsSubmitting(false);
   };
 
   if (authLoading) {
@@ -72,7 +52,7 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center gradient-hero p-4">
-      <Card className="w-full max-w-md shadow-xl">
+      <Card className="w-full max-w-md shadow-xl animate-fade-in">
         <CardHeader className="space-y-1 text-center">
           <div className="flex justify-center mb-4">
             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-light">
@@ -110,9 +90,9 @@ const Login = () => {
               />
             </div>
             {error && (
-              <div id="login-error" className="text-sm text-destructive mt-2" role="alert">
-                {error}
-              </div>
+              <Alert variant="destructive" className="animate-fade-in">
+                <AlertDescription id="login-error">{error}</AlertDescription>
+              </Alert>
             )}
           </CardContent>
           <CardFooter className="flex flex-col gap-4">

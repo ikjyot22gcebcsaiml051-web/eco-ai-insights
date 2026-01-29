@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Leaf, ChevronDown, LogOut, Loader2 } from "lucide-react";
+import { Leaf, ChevronDown, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -9,26 +9,17 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
-import { useState } from "react";
 
 export const Navigation = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { signOut } = useAuth();
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
   
   const isActive = (path: string) => location.pathname === path;
   
-  const handleLogout = async () => {
-    setIsLoggingOut(true);
-    try {
-      await signOut();
-      navigate("/", { replace: true });
-    } catch (error) {
-      console.error("Logout failed");
-    } finally {
-      setIsLoggingOut(false);
-    }
+  const handleLogout = () => {
+    signOut();
+    navigate("/", { replace: true });
   };
   
   return (
@@ -39,15 +30,10 @@ export const Navigation = () => {
             variant="ghost"
             size="sm"
             onClick={handleLogout}
-            disabled={isLoggingOut}
             className="gap-2 text-muted-foreground hover:text-foreground"
           >
-            {isLoggingOut ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <LogOut className="h-4 w-4" />
-            )}
-            {isLoggingOut ? "Logging out..." : "Logout"}
+            <LogOut className="h-4 w-4" />
+            Logout
           </Button>
         </div>
         

@@ -1,51 +1,20 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Leaf, Loader2 } from "lucide-react";
+import { Leaf } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { useAuth } from "@/hooks/useAuth";
-import { z } from "zod";
-
-const resetSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
-});
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const ResetPassword = () => {
-  const { resetPassword } = useAuth();
   const [email, setEmail] = useState("");
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [message, setMessage] = useState("");
 
-  const handleReset = async (e: React.FormEvent) => {
+  const handleReset = (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
-    setSuccess("");
-
-    // Validate input
-    const validation = resetSchema.safeParse({ email });
-    if (!validation.success) {
-      setError(validation.error.errors[0].message);
-      return;
-    }
-
-    setIsSubmitting(true);
-
-    try {
-      const { error: resetError } = await resetPassword(email);
-      
-      if (resetError) {
-        setError(resetError.message);
-      } else {
-        setSuccess("If an account exists with this email, you will receive a password reset link.");
-      }
-    } catch (err) {
-      setError("An unexpected error occurred. Please try again.");
-    } finally {
-      setIsSubmitting(false);
-    }
+    // Demo mode - just show a message
+    setMessage("This is a demo application. Please use the demo credentials to log in.");
   };
 
   return (
@@ -71,30 +40,17 @@ const ResetPassword = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                disabled={isSubmitting}
               />
             </div>
-            {error && (
-              <div className="text-sm text-destructive mt-2" role="alert">
-                {error}
-              </div>
-            )}
-            {success && (
-              <div className="text-sm text-primary mt-2" role="status">
-                {success}
-              </div>
+            {message && (
+              <Alert className="animate-fade-in">
+                <AlertDescription>{message}</AlertDescription>
+              </Alert>
             )}
           </CardContent>
           <CardFooter className="flex flex-col gap-4">
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Sending...
-                </>
-              ) : (
-                "Send Reset Link"
-              )}
+            <Button type="submit" className="w-full">
+              Send Reset Link
             </Button>
             <div className="text-sm text-center w-full">
               <Link to="/" className="text-primary hover:underline">
