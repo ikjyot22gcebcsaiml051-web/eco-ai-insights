@@ -9,7 +9,6 @@ import { Badge } from "@/components/ui/badge";
 import { CarbonEquivalencyWidget } from "@/components/CarbonEquivalencyWidget";
 import { Upload, Download, Mail, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import jsPDF from "jspdf";
 import emailjs from "@emailjs/browser";
 
 interface QueryAnalysis {
@@ -196,74 +195,47 @@ const UploadChat = () => {
     }, 5000);
   };
 
-  const downloadPDF = () => {
+  const downloadCSV = () => {
     if (!result) return;
 
-    const doc = new jsPDF();
-    const pageWidth = doc.internal.pageSize.getWidth();
-    
-    // Header
-    doc.setFontSize(20);
-    doc.text("AI Chat Analysis Report", pageWidth / 2, 20, { align: "center" });
-    
-    doc.setFontSize(12);
-    doc.text("AI Sustainability Dashboard", pageWidth / 2, 30, { align: "center" });
-    
-    doc.setFontSize(10);
-    doc.text(`Generated: ${new Date().toLocaleString()}`, pageWidth / 2, 40, { align: "center" });
+    // Generate CSV content
+    const headers = ["Query", "Category", "Recommended Model", "Tokens", "Energy (kWh)", "Carbon (g CO₂)"];
+    const rows = result.queries.map(q => [
+      `"${q.query.replace(/"/g, '""')}"`,
+      q.category,
+      q.recommendedModel,
+      q.tokens.toString(),
+      q.energy.toFixed(6),
+      q.carbon.toFixed(4)
+    ]);
 
-    // Summary
-    doc.setFontSize(14);
-    doc.text("Summary", 20, 55);
-    
-    doc.setFontSize(11);
-    doc.text(`Total Queries Analyzed: ${result.totalQueries}`, 20, 65);
-    doc.text(`Total Tokens: ${result.totalTokens.toLocaleString()}`, 20, 72);
-    doc.text(`Total Energy Consumed: ${result.totalEnergy.toFixed(6)} kWh`, 20, 79);
-    doc.text(`Total CO₂ Emissions: ${result.totalCarbon.toFixed(2)} grams`, 20, 86);
-    doc.text(`Equivalent to driving: ${result.drivingMeters} meters`, 20, 93);
+    // Add summary rows
+    rows.push([]);
+    rows.push(["Summary"]);
+    rows.push(["Total Queries", result.totalQueries.toString()]);
+    rows.push(["Total Tokens", result.totalTokens.toLocaleString()]);
+    rows.push(["Total Energy (kWh)", result.totalEnergy.toFixed(6)]);
+    rows.push(["Total CO₂ (g)", result.totalCarbon.toFixed(2)]);
+    rows.push(["Equivalent Driving (meters)", result.drivingMeters.toString()]);
 
-    // Category breakdown
-    doc.setFontSize(14);
-    doc.text("Category Breakdown", 20, 108);
-    
-    const categories = result.queries.reduce((acc, q) => {
-      acc[q.category] = (acc[q.category] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    const csvContent = [
+      headers.join(","),
+      ...rows.map(row => row.join(","))
+    ].join("\n");
 
-    let yPos = 118;
-    doc.setFontSize(11);
-    Object.entries(categories).forEach(([cat, count]) => {
-      doc.text(`${cat}: ${count} queries`, 20, yPos);
-      yPos += 7;
-    });
-
-    // Model recommendations
-    yPos += 5;
-    doc.setFontSize(14);
-    doc.text("Recommended Models", 20, yPos);
-    
-    const models = result.queries.reduce((acc, q) => {
-      acc[q.recommendedModel] = (acc[q.recommendedModel] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
-
-    yPos += 10;
-    doc.setFontSize(11);
-    Object.entries(models).forEach(([model, count]) => {
-      doc.text(`${model}: ${count} queries`, 20, yPos);
-      yPos += 7;
-    });
-
-    // Footer
-    doc.setFontSize(9);
-    doc.text("AI Sustainability Dashboard - Making AI Usage More Transparent", pageWidth / 2, 280, { align: "center" });
-
-    doc.save(`chat-analysis-${Date.now()}.pdf`);
+    // Create and download file
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", `chat-analysis-${Date.now()}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
     
     toast({
-      title: "PDF Downloaded",
+      title: "CSV Downloaded",
       description: "Your analysis report has been downloaded.",
     });
   };
@@ -429,9 +401,9 @@ const UploadChat = () => {
 
               {/* Action Buttons */}
               <div className="flex gap-4">
-                <Button onClick={downloadPDF} className="gap-2">
+                <Button onClick={downloadCSV} className="gap-2">
                   <Download className="h-4 w-4" />
-                  Download PDF Report
+                  Download CSV Report
                 </Button>
                 <Button 
                   onClick={() => setShowEmailForm(!showEmailForm)} 
