@@ -83,8 +83,8 @@ const PromptEstimator = () => {
     ) {
       category = "General Query";
       multiplier = 1.0 + (Math.random() * 0.1 - 0.05);
-      recommendedModel = "Gemini (Google)";
-      explanation = "Gemini is connected to Google search and handles fresh/news data well.";
+      recommendedModel = "Efficient LLM";
+      explanation = "Optimized for general queries with lower energy footprint and fast response times.";
     }
     // E. UNKNOWN CATEGORY
     else {

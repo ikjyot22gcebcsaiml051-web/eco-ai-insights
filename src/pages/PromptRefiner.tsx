@@ -157,7 +157,7 @@ const PromptRefiner = () => {
           </div>
           <h1 className="text-4xl font-bold mb-4">AI Prompt Refiner</h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Powered by Google Gemini — Get three optimized variants of your prompt with CO₂ impact analysis
+            AI Optimization Engine — Get three optimized variants of your prompt with CO₂ impact analysis
           </p>
         </div>
 
@@ -178,7 +178,7 @@ const PromptRefiner = () => {
               Enter Your Prompt
             </CardTitle>
             <CardDescription>
-              Paste your prompt below and Gemini will generate three optimized variants
+              Paste your prompt below and our AI will generate three optimized variants
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -198,7 +198,7 @@ const PromptRefiner = () => {
               {isRefining ? (
                 <>
                   <Sparkles className="h-4 w-4 mr-2 animate-spin" />
-                  Optimizing with Gemini...
+                  Optimizing with AI...
                 </>
               ) : (
                 <>
@@ -221,7 +221,7 @@ const PromptRefiner = () => {
                 </div>
                 <div className="text-center">
                   <p className="text-lg font-medium text-foreground mb-2">
-                    Optimizing prompt using Gemini…
+                    Advanced Semantic Processing…
                   </p>
                   <p className="text-sm text-muted-foreground animate-pulse">
                     Generating three optimized variants for accuracy, balance, and sustainability
