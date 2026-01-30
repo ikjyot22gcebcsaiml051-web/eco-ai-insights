@@ -1,17 +1,17 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Car, Zap, Battery, Search } from "lucide-react";
+import { Car, Zap, Battery, Search, Fuel } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface CarbonEquivalencyWidgetProps {
   totalCO2: number; // in grams
+  animationDuration?: number; // in ms, default 2000
 }
 
-const AnimatedNumber = ({ value, decimals = 2 }: { value: number; decimals?: number }) => {
+const AnimatedNumber = ({ value, decimals = 2, duration = 2000 }: { value: number; decimals?: number; duration?: number }) => {
   const [displayValue, setDisplayValue] = useState(0);
 
   useEffect(() => {
-    const duration = 1000;
-    const steps = 30;
+    const steps = 60;
     const increment = value / steps;
     let current = 0;
     
@@ -26,36 +26,36 @@ const AnimatedNumber = ({ value, decimals = 2 }: { value: number; decimals?: num
     }, duration / steps);
 
     return () => clearInterval(timer);
-  }, [value]);
+  }, [value, duration]);
 
   return <span>{displayValue.toFixed(decimals)}</span>;
 };
 
-export const CarbonEquivalencyWidget = ({ totalCO2 }: CarbonEquivalencyWidgetProps) => {
+export const CarbonEquivalencyWidget = ({ totalCO2, animationDuration = 2000 }: CarbonEquivalencyWidgetProps) => {
   // Conversion factors (grams CO₂)
+  const petrolCarKm = totalCO2 / 120; // avg petrol car ≈ 120 g CO₂/km
   const teslaKm = totalCO2 / 50; // 1 km Tesla ≈ 50 g CO₂
-  const ledMinutes = totalCO2 / 0.5; // 1 LED minute ≈ 0.5 g CO₂
   const phoneCharges = totalCO2 / 12; // 1 phone charge ≈ 12 g CO₂
   const googleSearches = totalCO2 / 0.2; // 1 Google search ≈ 0.2 g CO₂
 
   const equivalencies = [
     {
-      icon: Car,
-      label: "km driven in a Tesla",
-      value: teslaKm,
-      decimals: 3,
+      icon: Fuel,
+      label: "km driven (petrol car)",
+      value: petrolCarKm,
+      decimals: 4,
     },
     {
-      icon: Zap,
-      label: "minutes of LED light usage",
-      value: ledMinutes,
-      decimals: 1,
+      icon: Car,
+      label: "km driven (Tesla)",
+      value: teslaKm,
+      decimals: 4,
     },
     {
       icon: Battery,
       label: "smartphone charges",
       value: phoneCharges,
-      decimals: 2,
+      decimals: 3,
     },
     {
       icon: Search,
@@ -70,7 +70,8 @@ export const CarbonEquivalencyWidget = ({ totalCO2 }: CarbonEquivalencyWidgetPro
       {equivalencies.map((item, index) => (
         <Card
           key={index}
-          className="group relative overflow-hidden bg-gradient-to-br from-primary/5 via-chart-2/5 to-chart-3/5 border-primary/20 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/10"
+          className="group relative overflow-hidden backdrop-blur-sm bg-gradient-to-br from-primary/5 via-chart-2/5 to-chart-3/5 border-primary/20 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/10"
+          style={{ animationDelay: `${index * 100}ms` }}
         >
           <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-chart-2/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           <CardContent className="p-4 relative z-10">
@@ -79,7 +80,7 @@ export const CarbonEquivalencyWidget = ({ totalCO2 }: CarbonEquivalencyWidgetPro
                 <item.icon className="h-6 w-6" />
               </div>
               <div className="text-2xl font-bold text-foreground">
-                <AnimatedNumber value={item.value} decimals={item.decimals} />
+                <AnimatedNumber value={item.value} decimals={item.decimals} duration={animationDuration} />
               </div>
               <p className="text-sm text-muted-foreground">{item.label}</p>
             </div>
